@@ -1,0 +1,49 @@
+name: API Testing with Docker
+
+on:
+  push:
+    branches:
+      - main  # Hoặc nhánh bạn muốn trigger CI
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  api-testing:
+    runs-on: ubuntu-latest  # Chạy trên GitHub Actions (cloud)
+
+    steps:
+      # 1. Checkout mã nguồn của repo
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # 2. Set up Docker
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v1
+
+      # 3. Build Docker image cho ứng dụng
+      - name: Build Docker image
+        run: docker build -t my-api-app .
+
+      # 4. Chạy Docker container cho ứng dụng
+      - name: Run Docker container
+        run: |
+          docker run -d -p 8091:8091 my-api-app  # Chạy container ứng dụng API
+
+      # 5. Cài đặt Node.js và các dependencies cho test (Jest, Supertest)
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      # 6. Cài đặt các dependencies cần thiết cho test
+      - name: Install dependencies
+        run: npm install
+
+      # 7. Chạy các bài test API (Jest + Supertest)
+      - name: Run API tests
+        run: npm test  # Chạy test API (Jest sẽ thực hiện kiểm tra API)
+
+      # 8. Dọn dẹp các tài nguyên Docker sau khi test
+      - name: Clean up Docker
+        run: docker system prune -f  # Xóa các container dư thừa
