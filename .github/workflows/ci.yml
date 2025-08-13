@@ -1,4 +1,4 @@
-name: API Testing with Docker
+name: API Testing CI/CD Workflow
 
 on:
   push:
@@ -17,18 +17,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # 2. Set up Docker
+      # 2. Cài đặt Docker
       - name: Set up Docker
         uses: docker/setup-buildx-action@v1
 
-      # 3. Build Docker image cho ứng dụng
+      # 3. Build Docker image cho ứng dụng API từ repo giáo viên
       - name: Build Docker image
         run: docker build -t my-api-app .
 
-      # 4. Chạy Docker container cho ứng dụng
+      # 4. Chạy Docker container cho ứng dụng API từ repo giáo viên
       - name: Run Docker container
         run: |
-          docker run -d -p 8091:8091 my-api-app  # Chạy container ứng dụng API
+          docker run -d -p 8091:8091 my-api-app  # Chạy container ứng dụng API từ repo giáo viên
 
       # 5. Cài đặt Node.js và các dependencies cho test (Jest, Supertest)
       - name: Set up Node.js
