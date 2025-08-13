@@ -1,4 +1,4 @@
-# Sử dụng image Node.js từ Docker Hub
+# Sử dụng image chính thức của Node.js
 FROM node:16
 
 # Đặt thư mục làm việc trong container
@@ -10,11 +10,11 @@ COPY package*.json ./
 # Cài đặt các dependencies
 RUN npm install
 
-# Copy toàn bộ mã nguồn vào trong container
+# Copy toàn bộ mã nguồn vào container
 COPY . .
 
-# Mở cổng mà ứng dụng sẽ chạy (8091 cho API)
+# Mở cổng cho API (8091)
 EXPOSE 8091
 
-# Chạy ứng dụng
+# Lệnh để khởi động ứng dụng (ví dụ: node index.js hoặc app.js)
 CMD ["npm", "start"]

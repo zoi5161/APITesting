@@ -17,33 +17,45 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # 2. Cài đặt Docker
+      # 2. Cài đặt Docker và Docker Compose
       - name: Set up Docker
         uses: docker/setup-buildx-action@v1
 
-      # 3. Build Docker image cho ứng dụng API từ repo giáo viên
-      - name: Build Docker image
-        run: docker build -t my-api-app .
-
-      # 4. Chạy Docker container cho ứng dụng API từ repo giáo viên
-      - name: Run Docker container
+      # 3. Cài đặt Docker Compose
+      - name: Set up Docker Compose
         run: |
-          docker run -d -p 8091:8091 my-api-app  # Chạy container ứng dụng API từ repo giáo viên
+          sudo apt-get update
+          sudo apt-get install docker-compose
 
-      # 5. Cài đặt Node.js và các dependencies cho test (Jest, Supertest)
+      # 4. Build và khởi động các dịch vụ với Docker Compose
+      - name: Start the application with Docker Compose
+        run: |
+          docker-compose -f docker-compose.yml up -d  # Sử dụng Docker Compose để khởi động các dịch vụ
+
+      # 5. Kiểm tra xem API đã sẵn sàng chưa trước khi chạy test
+      - name: Wait for API to start
+        run: |
+          until curl -s http://localhost:8091/brands/1; do
+            echo "Waiting for API to start..."
+            sleep 5  # Chờ 5 giây trước khi thử lại
+          done
+
+      # 6. Cài đặt Node.js và các dependencies cho test (Jest, Supertest)
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '16'
 
-      # 6. Cài đặt các dependencies cần thiết cho test
+      # 7. Cài đặt các dependencies cần thiết cho test
       - name: Install dependencies
         run: npm install
 
-      # 7. Chạy các bài test API (Jest + Supertest)
+      # 8. Chạy các bài test API (Jest + Supertest)
       - name: Run API tests
         run: npm test  # Chạy test API (Jest sẽ thực hiện kiểm tra API)
 
-      # 8. Dọn dẹp các tài nguyên Docker sau khi test
+      # 9. Dọn dẹp các tài nguyên Docker sau khi test
       - name: Clean up Docker
-        run: docker system prune -f  # Xóa các container dư thừa
+        run: |
+          docker-compose down  # Dừng và xóa container
+          docker system prune -f  # Dọn dẹp các tài nguyên Docker không còn sử dụng
