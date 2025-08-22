@@ -14,55 +14,52 @@ jobs:
       - name: Checkout code ⚙️
         uses: actions/checkout@v4
 
-      # Setup Docker + Compose plugin
-      - name: Set up Docker 🐳
-        uses: docker/setup-buildx-action@v3
-
-      - name: Set up Docker Compose 🐳
-        uses: docker/setup-compose-action@v2
-
-      # Dùng docker-compose.ci.yml (không expose port → tránh lỗi port conflict)
-      - name: Start containers
+      # Start containers
+      - name: Start containers 🐳
         run: |
           export DISABLE_LOGGING=true
           docker compose -f docker-compose.ci.yml up -d --force-recreate
 
-      # Chờ cho DB và Laravel boot xong
+      # Wait for DB + Laravel API to be ready
       - name: Wait for services ⏳
         run: sleep 40
 
-      # Chạy migrate + seed để tạo database
+      # Install composer deps in container
+      - name: Install PHP dependencies 📦
+        run: docker compose -f docker-compose.ci.yml exec -T laravel-api composer install --no-interaction --prefer-dist
+
+      # Run migrations + seed
       - name: Run migrations & seed 🌱
         run: |
           docker compose -f docker-compose.ci.yml exec -T laravel-api php artisan migrate:fresh --force
           docker compose -f docker-compose.ci.yml exec -T laravel-api php artisan db:seed --force
 
-      # Cài Newman để chạy API tests
+      # Install Newman
       - name: Install Newman 📦
         run: npm install -g newman
 
-      # Chạy Brands API Tests
+      # Run Brands API Tests
       - name: Run Brands API Tests 🧪
         run: |
           newman run tests/BrandsAPITests.json \
             --iteration-data data/dataBrands.csv \
             --env-var "baseUrl=http://laravel-api:8091"
 
-      # Chạy Products API Tests
+      # Run Products API Tests
       - name: Run Products API Tests 🧪
         run: |
           newman run tests/ProductsAPITests.json \
             --iteration-data data/dataProducts.csv \
             --env-var "baseUrl=http://laravel-api:8091"
 
-      # Chạy Messages API Tests
+      # Run Message API Tests
       - name: Run Message API Tests 🧪
         run: |
           newman run tests/MessageAPITests.json \
             --iteration-data data/dataMessages.csv \
             --env-var "baseUrl=http://laravel-api:8091"
 
-      # Dọn dẹp containers sau khi chạy xong
+      # Cleanup
       - name: Stop containers 🧹
         if: always()
         run: docker compose -f docker-compose.ci.yml down -v
