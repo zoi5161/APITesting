@@ -72,18 +72,18 @@ jobs:
           npm install -g newman-reporter-htmlextra
 
       - name: Run Brands API Tests
-        run: newman run tests/postman/BrandsAPITests.json \
-              --iteration-data tests/postman/dataBrands.csv \
+        run: newman run tests/BrandsAPITests.json \
+              --iteration-data tests/dataBrands.csv \
               -r htmlextra --reporter-htmlextra-export reports/brands-report.html
 
       - name: Run Products API Tests
-        run: newman run tests/postman/ProductsAPITests.json \
-              --iteration-data tests/postman/dataProducts.csv \
+        run: newman run tests/ProductsAPITests.json \
+              --iteration-data tests/dataProducts.csv \
               -r htmlextra --reporter-htmlextra-export reports/products-report.html
 
       - name: Run Messages API Tests
-        run: newman run tests/postman/MessageAPITests.json \
-              --iteration-data tests/postman/dataMessages.csv \
+        run: newman run tests/MessageAPITests.json \
+              --iteration-data tests/dataMessages.csv \
               -r htmlextra --reporter-htmlextra-export reports/messages-report.html
 
       - name: Upload Reports
