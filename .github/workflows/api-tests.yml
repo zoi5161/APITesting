@@ -1,67 +1,67 @@
-name: API Tests 🚀
+name: Run API Tests 🚀
 
 on:
   push:
     branches: [ main ]
   pull_request:
+    branches: [ main ]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-
-    services:
-      docker:
-        image: docker:24.0.6
-        options: --privileged
-        ports:
-          - 8091:8091
+  api-tests:
+    runs-on: ubuntu-22.04
 
     steps:
-      - name: Checkout code 📥
+      - name: Checkout code ⚙️
         uses: actions/checkout@v4
 
-      # Khởi động docker-compose
-      - name: Start containers 🐳
+      # Cài Docker Compose plugin (trong GitHub runner mặc định chưa có docker compose v2)
+      - name: Set up Docker 🐳
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose-plugin
+
+      # Dùng docker-compose.ci.yml (không map port ra ngoài → tránh lỗi "port already allocated")
+      - name: Start containers
         run: |
           export DISABLE_LOGGING=true
-          docker compose -f docker-compose.yml up -d --build
+          docker compose -f docker-compose.ci.yml up -d --force-recreate
 
-      # Đợi DB & Laravel container lên
+      # Chờ cho DB và Laravel boot xong
       - name: Wait for services ⏳
-        run: sleep 40s
+        run: sleep 40
 
-      # Copy file .env.ci (từ repo root) vào container Laravel
-      - name: Copy env file into Laravel container ⚙️
-        run: docker cp .env.ci $(docker compose ps -q laravel-api):/var/www/.env
-
-      # Cài composer dependencies bên trong container Laravel
-      - name: Install PHP dependencies 📦
-        run: docker compose exec -T laravel-api composer install --no-interaction --prefer-dist
-
-      # Generate APP_KEY cho Laravel
-      - name: Generate Laravel key 🔑
-        run: docker compose exec -T laravel-api php artisan key:generate
-
-      # Chạy migrate + seed DB
-      - name: Migrate & Seed database 🌱
+      # Chạy migrate + seed để tạo database
+      - name: Run migrations & seed 🌱
         run: |
-          docker compose exec -T laravel-api php artisan migrate:fresh --force
-          docker compose exec -T laravel-api php artisan db:seed --force
+          docker compose -f docker-compose.ci.yml exec -T laravel-api php artisan migrate:fresh --force
+          docker compose -f docker-compose.ci.yml exec -T laravel-api php artisan db:seed --force
 
-      # Kiểm tra API status
-      - name: Check API status
-        run: curl -v http://laravel-api:8091/status || true
-
-      # Cài Newman để chạy API tests
-      - name: Install Newman 🧪
+      # Cài Newman để chạy test
+      - name: Install Newman 📦
         run: npm install -g newman
 
-      # Chạy API tests (sửa đường dẫn JSON & CSV theo repo của bạn)
-      - name: Run Brands API tests
-        run: newman run tests/BrandsAPITests.json --iteration-data data/dataBrands.csv
+      # Chạy Brands API Tests
+      - name: Run Brands API Tests 🧪
+        run: |
+          newman run tests/BrandsAPITests.json \
+            --iteration-data data/dataBrands.csv \
+            --env-var "baseUrl=http://laravel-api:8091"
 
-      - name: Run Products API tests
-        run: newman run tests/ProductsAPITests.json --iteration-data data/dataProducts.csv
+      # Chạy Products API Tests
+      - name: Run Products API Tests 🧪
+        run: |
+          newman run tests/ProductsAPITests.json \
+            --iteration-data data/dataProducts.csv \
+            --env-var "baseUrl=http://laravel-api:8091"
 
-      - name: Run Messages API tests
-        run: newman run tests/MessageAPITests.json --iteration-data data/dataMessages.csv
+      # Chạy Messages API Tests
+      - name: Run Message API Tests 🧪
+        run: |
+          newman run tests/MessageAPITests.json \
+            --iteration-data data/dataMessages.csv \
+            --env-var "baseUrl=http://laravel-api:8091"
+
+      # Dọn dẹp containers sau khi chạy xong
+      - name: Stop containers 🧹
+        if: always()
+        run: docker compose -f docker-compose.ci.yml down -v

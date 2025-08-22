@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  mariadb:
+    image: mariadb:10.9
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: root
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+
+  laravel-api:
+    build:
+      context: .
+      dockerfile: api.docker
+    depends_on:
+      - mariadb
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_DATABASE: laravel
+      DB_USERNAME: root
+      DB_PASSWORD: ""
+
+  web:
+    build:
+      context: .
+      dockerfile: web.docker
+    depends_on:
+      - laravel-api
+
+volumes:
+  mariadb_data:
