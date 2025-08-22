@@ -24,16 +24,11 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8091/products/{{id}}",
+					"raw": "{{baseUrl}}/api/products/{{id}}",
 					"protocol": "http",
-					"host": [
-						"localhost"
-					],
+					"host": ["{{baseUrl}}"],
 					"port": "8091",
-					"path": [
-						"products",
-						"{{id}}"
-					]
+					"path": ["api", "products", "{{id}}"]
 				}
 			},
 			"response": []

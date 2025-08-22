@@ -36,15 +36,11 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8091/messages",
+					"raw": "{{baseUrl}}/api/messages",
 					"protocol": "http",
-					"host": [
-						"localhost"
-					],
+					"host": [ "{{baseUrl}}" ],
 					"port": "8091",
-					"path": [
-						"messages"
-					]
+					"path": [ "api", "messages" ]
 				}
 			},
 			"response": []

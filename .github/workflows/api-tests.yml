@@ -24,7 +24,7 @@ jobs:
         run: |
           echo "⏳ Đợi Laravel API chạy lên..."
           for i in {1..30}; do
-            if curl -s http://localhost:8091/ > /dev/null; then
+            if curl -s http://localhost:8091/api/status > /dev/null; then
               echo "✅ Laravel API đã sẵn sàng!"
               break
             fi
@@ -73,16 +73,19 @@ jobs:
 
       - name: Run Brands API Tests
         run: newman run tests/BrandsAPITests.json \
+              --env-var "baseUrl=http://localhost:8091" \
               --iteration-data tests/dataBrands.csv \
               -r htmlextra --reporter-htmlextra-export reports/brands-report.html
 
       - name: Run Products API Tests
         run: newman run tests/ProductsAPITests.json \
+              --env-var "baseUrl=http://localhost:8091" \
               --iteration-data tests/dataProducts.csv \
               -r htmlextra --reporter-htmlextra-export reports/products-report.html
 
       - name: Run Messages API Tests
         run: newman run tests/MessageAPITests.json \
+              --env-var "baseUrl=http://localhost:8091" \
               --iteration-data tests/dataMessages.csv \
               -r htmlextra --reporter-htmlextra-export reports/messages-report.html
 
