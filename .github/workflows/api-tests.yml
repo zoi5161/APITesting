@@ -39,6 +39,14 @@ jobs:
           curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
           composer --version
 
+      - name: Prepare Laravel environment
+        run: |
+          cp sprint5-with-bugs/API/.env.example sprint5-with-bugs/API/.env
+          sed -i 's/DB_DATABASE=.*/DB_DATABASE=toolshop/' sprint5-with-bugs/API/.env
+          sed -i 's/DB_USERNAME=.*/DB_USERNAME=user/' sprint5-with-bugs/API/.env
+          sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=root/' sprint5-with-bugs/API/.env
+          sed -i 's/DB_HOST=.*/DB_HOST=mariadb/' sprint5-with-bugs/API/.env
+
       - name: Install PHP dependencies
         run: |
           cd sprint5-with-bugs/API
@@ -46,6 +54,9 @@ jobs:
           sudo mkdir -p vendor
           sudo chmod -R 777 vendor
           composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Fix permissions for Laravel storage
+        run: docker compose exec -T laravel-api chmod -R 777 storage bootstrap/cache
 
       - name: Run migrations
         run: docker compose exec -T laravel-api php artisan migrate --force
