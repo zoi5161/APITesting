@@ -50,7 +50,7 @@ jobs:
 
       # Kiểm tra API status
       - name: Check API status
-        run: curl -v http://localhost:8091/status || true
+        run: curl -v http://laravel-api:8091/status || true
 
       # Cài Newman để chạy API tests
       - name: Install Newman 🧪
