@@ -56,7 +56,9 @@ jobs:
           composer install --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Fix permissions for Laravel storage
-        run: docker compose exec -T laravel-api chmod -R 777 storage bootstrap/cache
+        run: |
+          sudo chmod -R 777 sprint5-with-bugs/API/storage
+          sudo chmod -R 777 sprint5-with-bugs/API/bootstrap/cache
 
       - name: Run migrations
         run: docker compose exec -T laravel-api php artisan migrate --force
