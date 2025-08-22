@@ -23,7 +23,7 @@ jobs:
         run: npm install -g newman
 
       - name: Start services with Docker Compose
-        run: docker-compose up -d
+        run: docker compose up -d
 
       - name: Run migrations & seed database
         run: |
@@ -53,4 +53,4 @@ jobs:
 
       - name: Stop Docker
         if: always()
-        run: docker-compose down -v
+        run: docker compose down -v
