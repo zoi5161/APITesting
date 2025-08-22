@@ -34,7 +34,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{baseUrl}}/api/messages"
+					"raw": "{{baseUrl}}/messages",
+					"host": ["{{baseUrl}}"],
+					"path": ["messages"]
 				}
 			},
 			"response": []

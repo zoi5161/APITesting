@@ -24,7 +24,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{baseUrl}}/api/products/{{id}}"
+					"raw": "{{baseUrl}}/products/{{id}}",
+					"host": ["{{baseUrl}}"],
+					"path": ["products", "{{id}}"]
 				}
 			},
 			"response": []
