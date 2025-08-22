@@ -42,6 +42,9 @@ jobs:
       - name: Install PHP dependencies
         run: |
           cd sprint5-with-bugs/API
+          sudo rm -rf vendor
+          sudo mkdir -p vendor
+          sudo chmod -R 777 vendor
           composer install --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Run migrations
