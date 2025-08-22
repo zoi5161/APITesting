@@ -25,16 +25,15 @@ jobs:
       - name: Start services with Docker Compose
         run: docker-compose up -d
 
-      - name: Run migrations
-        run: docker-compose exec -T laravel-api php artisan migrate
-
-      - name: Seed database
-        run: docker-compose exec -T laravel-api php artisan db:seed
+      - name: Run migrations & seed database
+        run: |
+          docker-compose exec -T -e APP_ENV=local laravel-api php artisan migrate:fresh --force
+          docker-compose exec -T -e APP_ENV=local laravel-api php artisan db:seed --force
 
       - name: Wait for API to be ready
         run: |
           for i in {1..30}; do
-            if curl -s http://localhost:8091/health > /dev/null; then
+            if curl -s http://localhost:8091/products > /dev/null; then
               echo "✅ API is up!"
               exit 0
             fi
@@ -54,4 +53,4 @@ jobs:
 
       - name: Stop Docker
         if: always()
-        run: docker-compose down
+        run: docker-compose down -v
