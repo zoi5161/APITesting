@@ -16,7 +16,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"id\": \"{{id}}\"\n}\n",
+					"raw": "{\n  \"id\": \"{{id}}\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -25,9 +25,7 @@
 				},
 				"url": {
 					"raw": "{{baseUrl}}/api/products/{{id}}",
-					"protocol": "http",
 					"host": ["{{baseUrl}}"],
-					"port": "8091",
 					"path": ["api", "products", "{{id}}"]
 				}
 			},
