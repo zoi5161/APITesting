@@ -1,59 +1,67 @@
-name: API Tests
+name: API Tests 🚀
 
 on:
   push:
     branches: [ main ]
   pull_request:
-    branches: [ main ]
 
 jobs:
   test:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
+
+    services:
+      docker:
+        image: docker:24.0.6
+        options: --privileged
+        ports:
+          - 8091:8091
 
     steps:
-      - name: Checkout repo
+      - name: Checkout code 📥
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
+      # Khởi động docker-compose
+      - name: Start containers 🐳
+        run: |
+          export DISABLE_LOGGING=true
+          docker compose -f docker-compose.yml up -d --build
 
-      - name: Install Newman
+      # Đợi DB & Laravel container lên
+      - name: Wait for services ⏳
+        run: sleep 40s
+
+      # Copy file .env.ci (từ repo root) vào container Laravel
+      - name: Copy env file into Laravel container ⚙️
+        run: docker cp .env.ci $(docker compose ps -q laravel-api):/var/www/.env
+
+      # Cài composer dependencies bên trong container Laravel
+      - name: Install PHP dependencies 📦
+        run: docker compose exec -T laravel-api composer install --no-interaction --prefer-dist
+
+      # Generate APP_KEY cho Laravel
+      - name: Generate Laravel key 🔑
+        run: docker compose exec -T laravel-api php artisan key:generate
+
+      # Chạy migrate + seed DB
+      - name: Migrate & Seed database 🌱
+        run: |
+          docker compose exec -T laravel-api php artisan migrate:fresh --force
+          docker compose exec -T laravel-api php artisan db:seed --force
+
+      # Kiểm tra API status
+      - name: Check API status
+        run: curl -v http://localhost:8091/status || true
+
+      # Cài Newman để chạy API tests
+      - name: Install Newman 🧪
         run: npm install -g newman
 
-      - name: Start services with Docker Compose
-        run: docker compose up -d
-
-      - name: Install PHP dependencies (Composer)
-        run: docker compose run --rm composer install --no-interaction --prefer-source --no-progress --no-suggest --ignore-platform-reqs
-
-      - name: Run migrations & seed database
-        run: |
-          docker compose exec -T -e APP_ENV=local laravel-api php artisan migrate:fresh --force
-          docker compose exec -T -e APP_ENV=local laravel-api php artisan db:seed --force
-
-      - name: Wait for API to be ready
-        run: |
-          for i in {1..30}; do
-            if curl -s http://localhost:8091/products > /dev/null; then
-              echo "✅ API is up!"
-              exit 0
-            fi
-            echo "⏳ Waiting for API..."
-            sleep 5
-          done
-          echo "❌ API did not start in time" && exit 1
-
+      # Chạy API tests (sửa đường dẫn JSON & CSV theo repo của bạn)
       - name: Run Brands API tests
-        run: newman run BrandsAPITests.json --iteration-data dataBrands.csv
+        run: newman run tests/BrandsAPITests.json --iteration-data data/dataBrands.csv
 
       - name: Run Products API tests
-        run: newman run ProductsAPITests.json --iteration-data dataProducts.csv
+        run: newman run tests/ProductsAPITests.json --iteration-data data/dataProducts.csv
 
       - name: Run Messages API tests
-        run: newman run MessageAPITests.json --iteration-data dataMessages.csv
-
-      - name: Stop Docker
-        if: always()
-        run: docker compose down -v
+        run: newman run tests/MessageAPITests.json --iteration-data data/dataMessages.csv
