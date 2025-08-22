@@ -40,7 +40,9 @@ jobs:
           composer --version
 
       - name: Install PHP dependencies
-        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+        run: |
+          cd sprint5-with-bugs/API
+          composer install --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Run migrations
         run: docker compose exec -T laravel-api php artisan migrate --force
