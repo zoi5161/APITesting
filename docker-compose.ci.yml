@@ -2,18 +2,19 @@ version: "3.8"
 
 services:
   mariadb:
-    image: mariadb:10.9
+    image: mariadb:10.11
     environment:
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: laravel
-      MYSQL_USER: root
-      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-    volumes:
-      - mariadb_data:/var/lib/mysql
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: laravel
+    networks:
+      - app-network
 
   laravel-api:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile   # dùng Dockerfile chuẩn, không còn api.docker
     depends_on:
       - mariadb
     environment:
@@ -21,15 +22,13 @@ services:
       DB_HOST: mariadb
       DB_PORT: 3306
       DB_DATABASE: laravel
-      DB_USERNAME: root
-      DB_PASSWORD: ""
+      DB_USERNAME: laravel
+      DB_PASSWORD: laravel
+    expose:
+      - "8091"   # expose nội bộ cho newman gọi
+    networks:
+      - app-network
 
-  web:
-    build:
-      context: .
-      dockerfile: web.docker
-    depends_on:
-      - laravel-api
-
-volumes:
-  mariadb_data:
+networks:
+  app-network:
+    driver: bridge
