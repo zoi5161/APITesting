@@ -1,65 +1,51 @@
-name: Run API Tests 🚀
+name: API Tests with Newman
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ main ]
+    branches: [ "main" ]
 
 jobs:
-  api-tests:
-    runs-on: ubuntu-22.04
+  newman-tests:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code ⚙️
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      # Start containers
-      - name: Start containers 🐳
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+
+      - name: Start containers
+        run: docker-compose up -d
+
+      - name: Wait for Laravel API
         run: |
-          export DISABLE_LOGGING=true
-          docker compose -f docker-compose.ci.yml up -d --force-recreate
+          echo "⏳ Đợi Laravel API chạy lên..."
+          for i in {1..30}; do
+            if curl -s http://localhost:8091/ > /dev/null; then
+              echo "✅ Laravel API đã sẵn sàng!"
+              break
+            fi
+            echo "⏳ Chờ thêm 5s..."
+            sleep 5
+          done
 
-      # Wait for DB + Laravel API to be ready
-      - name: Wait for services ⏳
-        run: sleep 40
+      - name: Run migrations
+        run: docker-compose exec -T laravel-api php artisan migrate
 
-      # Install composer deps in container
-      - name: Install PHP dependencies 📦
-        run: docker compose -f docker-compose.ci.yml exec -T laravel-api composer install --no-interaction --prefer-dist
+      - name: Seed database
+        run: docker-compose exec -T laravel-api php artisan db:seed
 
-      # Run migrations + seed
-      - name: Run migrations & seed 🌱
-        run: |
-          docker compose -f docker-compose.ci.yml exec -T laravel-api php artisan migrate:fresh --force
-          docker compose -f docker-compose.ci.yml exec -T laravel-api php artisan db:seed --force
-
-      # Install Newman
-      - name: Install Newman 📦
+      - name: Install Newman
         run: npm install -g newman
 
-      # Run Brands API Tests
-      - name: Run Brands API Tests 🧪
-        run: |
-          newman run tests/BrandsAPITests.json \
-            --iteration-data data/dataBrands.csv \
-            --env-var "baseUrl=http://laravel-api:8091"
+      - name: Run Brands API Tests
+        run: newman run tests/postman/BrandsAPITests.json --iteration-data tests/postman/dataBrands.csv
 
-      # Run Products API Tests
-      - name: Run Products API Tests 🧪
-        run: |
-          newman run tests/ProductsAPITests.json \
-            --iteration-data data/dataProducts.csv \
-            --env-var "baseUrl=http://laravel-api:8091"
+      - name: Run Products API Tests
+        run: newman run tests/postman/ProductsAPITests.json --iteration-data tests/postman/dataProducts.csv
 
-      # Run Message API Tests
-      - name: Run Message API Tests 🧪
-        run: |
-          newman run tests/MessageAPITests.json \
-            --iteration-data data/dataMessages.csv \
-            --env-var "baseUrl=http://laravel-api:8091"
-
-      # Cleanup
-      - name: Stop containers 🧹
-        if: always()
-        run: docker compose -f docker-compose.ci.yml down -v
+      - name: Run Messages API Tests
+        run: newman run tests/postman/MessageAPITests.json --iteration-data tests/postman/dataMessages.csv
