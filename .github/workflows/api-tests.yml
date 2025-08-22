@@ -18,7 +18,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Start containers
-        run: docker compose up -d
+        run: docker compose up -d --build
 
       - name: Wait for Laravel API
         run: |
@@ -32,11 +32,14 @@ jobs:
             sleep 5
           done
 
+      - name: Install PHP dependencies
+        run: docker compose exec -T laravel-api composer install --no-interaction --prefer-dist --optimize-autoloader
+
       - name: Run migrations
-        run: docker compose exec -T laravel-api php artisan migrate
+        run: docker compose exec -T laravel-api php artisan migrate --force
 
       - name: Seed database
-        run: docker compose exec -T laravel-api php artisan db:seed
+        run: docker compose exec -T laravel-api php artisan db:seed --force
 
       - name: Install Newman + Reporter
         run: |
