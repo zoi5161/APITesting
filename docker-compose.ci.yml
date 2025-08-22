@@ -13,7 +13,7 @@ services:
   laravel-api:
     build:
       context: .
-      dockerfile: api.docker
+      dockerfile: Dockerfile
     depends_on:
       - mariadb
     environment:
