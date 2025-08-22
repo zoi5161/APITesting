@@ -14,13 +14,14 @@ jobs:
       - name: Checkout code ⚙️
         uses: actions/checkout@v4
 
-      # Cài Docker Compose plugin (trong GitHub runner mặc định chưa có docker compose v2)
+      # Setup Docker + Compose plugin
       - name: Set up Docker 🐳
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose-plugin
+        uses: docker/setup-buildx-action@v3
 
-      # Dùng docker-compose.ci.yml (không map port ra ngoài → tránh lỗi "port already allocated")
+      - name: Set up Docker Compose 🐳
+        uses: docker/setup-compose-action@v2
+
+      # Dùng docker-compose.ci.yml (không expose port → tránh lỗi port conflict)
       - name: Start containers
         run: |
           export DISABLE_LOGGING=true
@@ -36,7 +37,7 @@ jobs:
           docker compose -f docker-compose.ci.yml exec -T laravel-api php artisan migrate:fresh --force
           docker compose -f docker-compose.ci.yml exec -T laravel-api php artisan db:seed --force
 
-      # Cài Newman để chạy test
+      # Cài Newman để chạy API tests
       - name: Install Newman 📦
         run: npm install -g newman
 
