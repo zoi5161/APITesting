@@ -32,8 +32,15 @@ jobs:
             sleep 5
           done
 
+      - name: Install PHP & Composer on runner
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y php-cli unzip curl
+          curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+          composer --version
+
       - name: Install PHP dependencies
-        run: docker compose exec -T laravel-api composer install --no-interaction --prefer-dist --optimize-autoloader
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Run migrations
         run: docker compose exec -T laravel-api php artisan migrate --force
