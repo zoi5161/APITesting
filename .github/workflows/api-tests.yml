@@ -18,7 +18,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Start containers
-        run: docker-compose up -d
+        run: docker compose up -d
 
       - name: Wait for Laravel API
         run: |
@@ -33,19 +33,33 @@ jobs:
           done
 
       - name: Run migrations
-        run: docker-compose exec -T laravel-api php artisan migrate
+        run: docker compose exec -T laravel-api php artisan migrate
 
       - name: Seed database
-        run: docker-compose exec -T laravel-api php artisan db:seed
+        run: docker compose exec -T laravel-api php artisan db:seed
 
-      - name: Install Newman
-        run: npm install -g newman
+      - name: Install Newman + Reporter
+        run: |
+          npm install -g newman
+          npm install -g newman-reporter-htmlextra
 
       - name: Run Brands API Tests
-        run: newman run tests/postman/BrandsAPITests.json --iteration-data tests/postman/dataBrands.csv
+        run: newman run tests/postman/BrandsAPITests.json \
+              --iteration-data tests/postman/dataBrands.csv \
+              -r htmlextra --reporter-htmlextra-export reports/brands-report.html
 
       - name: Run Products API Tests
-        run: newman run tests/postman/ProductsAPITests.json --iteration-data tests/postman/dataProducts.csv
+        run: newman run tests/postman/ProductsAPITests.json \
+              --iteration-data tests/postman/dataProducts.csv \
+              -r htmlextra --reporter-htmlextra-export reports/products-report.html
 
       - name: Run Messages API Tests
-        run: newman run tests/postman/MessageAPITests.json --iteration-data tests/postman/dataMessages.csv
+        run: newman run tests/postman/MessageAPITests.json \
+              --iteration-data tests/postman/dataMessages.csv \
+              -r htmlextra --reporter-htmlextra-export reports/messages-report.html
+
+      - name: Upload Reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: newman-reports
+          path: reports/*.html
