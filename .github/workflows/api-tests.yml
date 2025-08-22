@@ -1,0 +1,57 @@
+name: API Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Start services with Docker Compose
+        run: docker-compose up -d
+
+      - name: Run migrations
+        run: docker-compose exec -T laravel-api php artisan migrate
+
+      - name: Seed database
+        run: docker-compose exec -T laravel-api php artisan db:seed
+
+      - name: Wait for API to be ready
+        run: |
+          for i in {1..30}; do
+            if curl -s http://localhost:8091/health > /dev/null; then
+              echo "✅ API is up!"
+              exit 0
+            fi
+            echo "⏳ Waiting for API..."
+            sleep 5
+          done
+          echo "❌ API did not start in time" && exit 1
+
+      - name: Run Brands API tests
+        run: newman run BrandsAPITests.json --iteration-data dataBrands.csv
+
+      - name: Run Products API tests
+        run: newman run ProductsAPITests.json --iteration-data dataProducts.csv
+
+      - name: Run Messages API tests
+        run: newman run MessageAPITests.json --iteration-data dataMessages.csv
+
+      - name: Stop Docker
+        if: always()
+        run: docker-compose down
