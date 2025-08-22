@@ -27,8 +27,8 @@ jobs:
 
       - name: Run migrations & seed database
         run: |
-          docker-compose exec -T -e APP_ENV=local laravel-api php artisan migrate:fresh --force
-          docker-compose exec -T -e APP_ENV=local laravel-api php artisan db:seed --force
+          docker compose exec -T -e APP_ENV=local laravel-api php artisan migrate:fresh --force
+          docker compose exec -T -e APP_ENV=local laravel-api php artisan db:seed --force
 
       - name: Wait for API to be ready
         run: |
