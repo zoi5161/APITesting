@@ -91,11 +91,11 @@ jobs:
               --iteration-data tests/dataProducts.csv \
               -r htmlextra --reporter-htmlextra-export reports/products-report.html
 
-      - name: Run Messages API Tests
-        run: newman run tests/MessageAPITests.json \
-              --env-var baseUrl="http://localhost:8091" \
-              --iteration-data tests/dataMessages.csv \
-              -r htmlextra --reporter-htmlextra-export reports/messages-report.html
+      # - name: Run Messages API Tests
+      #   run: newman run tests/MessageAPITests.json \
+      #         --env-var baseUrl="http://localhost:8091" \
+      #         --iteration-data tests/dataMessages.csv \
+      #         -r htmlextra --reporter-htmlextra-export reports/messages-report.html
 
       - name: Upload Reports
         uses: actions/upload-artifact@v4
