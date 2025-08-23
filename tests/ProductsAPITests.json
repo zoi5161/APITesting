@@ -1,35 +1,50 @@
 {
-	"info": {
-		"_postman_id": "65a22697-536f-455c-9cd3-458c7f0857ae",
-		"name": "Products API Tests",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "39230841"
-	},
-	"item": [
-		{
-			"name": "Get Each Products",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"id\": \"{{id}}\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8091/products/{{id}}",
-					"host": ["http://localhost:8091"],
-					"path": ["products", "{{id}}"]
-				}
-			},
-			"response": []
-		}
-	]
+  "info": {
+    "_postman_id": "65a22697-536f-455c-9cd3-458c7f0857ae",
+    "name": "Products API Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "39230841"
+  },
+  "item": [
+    {
+      "name": "Get Each Product",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "var jsonData = pm.response.json();",
+              "pm.test(\"Response has id field\", function () {",
+              "    pm.expect(jsonData).to.have.property('id');",
+              "});",
+              "pm.test(\"Response has name field\", function () {",
+              "    pm.expect(jsonData).to.have.property('name');",
+              "});",
+              "pm.test(\"Response has price field\", function () {",
+              "    pm.expect(jsonData).to.have.property('price');",
+              "});",
+              "pm.test(\"Response has stock field\", function () {",
+              "    pm.expect(jsonData).to.have.property('stock');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8091/products/{{id}}",
+          "host": ["http://localhost:8091"],
+          "path": ["products", "{{id}}"]
+        }
+      },
+      "response": []
+    }
+  ]
 }
