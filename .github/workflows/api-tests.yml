@@ -76,7 +76,6 @@ jobs:
 
       - name: Run Brands API Tests
         run: newman run tests/BrandsAPITests.json \
-              --env-var baseUrl="http://localhost:8091" \
               --iteration-data dataBrands.csv \
               -r htmlextra --reporter-htmlextra-export reports/brands-report.html
 
