@@ -34,8 +34,8 @@
 					}
 				},
 				"url": {
-					"raw": "{{baseUrl}}/messages",
-					"host": ["{{baseUrl}}"],
+					"raw": "http://localhost:8091/messages",
+					"host": ["http://localhost:8091"],
 					"path": ["messages"]
 				}
 			},

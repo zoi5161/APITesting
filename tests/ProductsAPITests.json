@@ -24,8 +24,8 @@
 					}
 				},
 				"url": {
-					"raw": "{{baseUrl}}/products/{{id}}",
-					"host": ["{{baseUrl}}"],
+					"raw": "http://localhost:8091/products/{{id}}",
+					"host": ["http://localhost:8091"],
 					"path": ["products", "{{id}}"]
 				}
 			},
