@@ -1,16 +1,26 @@
 {
-  "info": {
-    "name": "Brands API Tests",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-  },
-  "item": [
-    {
-      "name": "Get Each Brands",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": "{{url}}"
-      }
-    }
-  ]
+	"info": {
+		"_postman_id": "8ef83890-ec96-414b-a7ea-a40cb1d8cf9f",
+		"name": "Brands API Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39230841"
+	},
+	"item": [
+		{
+			"name": "Get Each Brands",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8091/brands/{id}",
+					"host": ["http://localhost:8091"],
+					"path": ["brands", "{id}"]
+				}
+			},
+			"response": []
+		}
+	]
 }
