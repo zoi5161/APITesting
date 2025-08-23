@@ -84,15 +84,6 @@ jobs:
             -r cli \
             -r htmlextra --reporter-htmlextra-export reports/brands-report.html
 
-      - name: Debug Products CSV (hexdump)
-        run: |
-          echo "📂 Hexdump of tests/dataProducts.csv:"
-          hexdump -C tests/dataProducts.csv | head -n 50
-          echo ""
-          echo "📂 Preview CSV content:"
-          cat -n tests/dataProducts.csv | head -n 20
-
-
       - name: Run Products API Tests
         run: |
               newman run tests/ProductsAPITests.json \
