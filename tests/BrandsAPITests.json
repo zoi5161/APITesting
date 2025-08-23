@@ -1,9 +1,7 @@
 {
   "info": {
-    "_postman_id": "8ef83890-ec96-414b-a7ea-a40cb1d8cf9f",
     "name": "Brands API Tests",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "39230841"
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
@@ -11,9 +9,8 @@
       "request": {
         "method": "GET",
         "header": [],
-        "url": "http://localhost:8091/brands/{{id}}"
-      },
-      "response": []
+        "url": "{{url}}"
+      }
     }
   ]
 }
