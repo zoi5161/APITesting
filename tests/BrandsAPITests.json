@@ -15,8 +15,8 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{baseUrl}}/brands/{{id}}",
-					"host": ["{{baseUrl}}"],
+					"raw": "{{baseurl}}/brands/{{id}}",
+					"host": ["{{baseurl}}"],
 					"path": ["brands", "{{id}}"]
 				}
 			},

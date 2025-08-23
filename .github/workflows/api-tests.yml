@@ -73,10 +73,10 @@ jobs:
 
       - name: Prepare reports folder
         run: mkdir -p reports
-        
+
       - name: Run Brands API Tests
         run: newman run tests/BrandsAPITests.json \
-              --env-var baseUrl="http://localhost:8091" \
+              --env-var baseurl="http://localhost:8091" \
               --iteration-data tests/dataBrands.csv \
               -r htmlextra --reporter-htmlextra-export reports/brands-report.html
 
