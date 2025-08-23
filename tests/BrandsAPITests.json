@@ -1,57 +1,42 @@
 {
-  "info": {
-    "_postman_id": "8ef83890-ec96-414b-a7ea-a40cb1d8cf9f",
-    "name": "Brands API Tests",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "39230841"
-  },
-  "item": [
-    {
-      "name": "Get Each Brand",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "// Kiểm tra status code",
-              "pm.test(\"Status code is 200\", function () {",
-              "    pm.response.to.have.status(200);",
-              "});",
-              "",
-              "// Parse JSON",
-              "var jsonData = {};",
-              "try {",
-              "    jsonData = pm.response.json();",
-              "} catch (e) {",
-              "    pm.test(\"Response is valid JSON\", function () {",
-              "        throw new Error(\"Response is not JSON\");",
-              "    });",
-              "}",
-              "",
-              "// Check có field id",
-              "pm.test(\"Response has id field\", function () {",
-              "    pm.expect(jsonData).to.have.property('id');",
-              "});",
-              "",
-              "// Check có field name",
-              "pm.test(\"Response has name field\", function () {",
-              "    pm.expect(jsonData).to.have.property('name');",
-              "});"
-            ]
-          }
-        }
-      ],
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "http://localhost:8091/brands/{{id}}",
-          "host": ["http://localhost:8091"],
-          "path": ["brands", "{{id}}"]
-        }
-      },
-      "response": []
-    }
-  ]
+	"info": {
+		"_postman_id": "8ef83890-ec96-414b-a7ea-a40cb1d8cf9f",
+		"name": "Brands API Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39230841"
+	},
+	"item": [
+		{
+			"name": "Get Each Brands",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": \"{{id}}\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8091/brands/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8091",
+					"path": [
+						"brands",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
 }

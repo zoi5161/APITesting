@@ -15,11 +15,9 @@
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {",
 							"    pm.response.to.have.status(200);",
-							"});",
-							""
+							"});"
 						],
-						"type": "text/javascript",
-						"packages": {}
+						"type": "text/javascript"
 					}
 				}
 			],
@@ -28,7 +26,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"email\": \"{{email}}\",\n  \"name\": \"{{name}}\",\n  \"subject\": \"{{subject}}\",\n  \"message\": \"{{message}}\"\n}\n",
+					"raw": "{\n  \"email\": \"{{email}}\",\n  \"name\": \"{{name}}\",\n  \"subject\": \"{{subject}}\",\n  \"message\": \"{{message}}\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -37,14 +35,8 @@
 				},
 				"url": {
 					"raw": "http://localhost:8091/messages",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8091",
-					"path": [
-						"messages"
-					]
+					"host": ["http://localhost:8091"],
+					"path": ["messages"]
 				}
 			},
 			"response": []
