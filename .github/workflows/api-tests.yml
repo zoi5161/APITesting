@@ -74,16 +74,16 @@ jobs:
       - name: Prepare reports folder
         run: mkdir -p reports
 
+      - name: Normalize CSV line endings
+        run: sed -i 's/\r$//' tests/*.csv
+
       - name: Run Brands API Tests
         run: |
-          echo "=== Debug CSV ==="
-          ls -l tests
-          cat tests/dataBrands.csv | hexdump -C
-          
           newman run tests/BrandsAPITests.json \
             --iteration-data tests/dataBrands.csv \
             -r cli \
             -r htmlextra --reporter-htmlextra-export reports/brands-report.html
+
 
       - name: Run Products API Tests
         run: newman run tests/ProductsAPITests.json \
