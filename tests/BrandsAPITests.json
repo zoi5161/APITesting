@@ -16,7 +16,6 @@
 				"header": [],
 				"url": {
 					"raw": "{{baseurl}}/brands/{{id}}",
-					"host": ["{{baseurl}}"],
 					"path": ["brands", "{{id}}"]
 				}
 			},
