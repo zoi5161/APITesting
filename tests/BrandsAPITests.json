@@ -8,7 +8,7 @@
       "name": "Get Each Brands",
       "request": {
         "method": "GET",
-        "url": "http://localhost:8091/brands/0"
+        "url": "http://localhost:8091/brands/1"
       },
       "event": [
         {
@@ -16,7 +16,12 @@
           "script": {
             "exec": [
               "let id = pm.iterationData.get('id');",
-              "pm.request.url = 'http://localhost:8091/brands/' + id;"
+              "if (id) {",
+              "   pm.request.url = 'http://localhost:8091/brands/' + id;",
+              "   console.log('✅ ID từ CSV:', id);",
+              "} else {",
+              "   console.log('❌ Không đọc được id từ CSV');",
+              "}"
             ],
             "type": "text/javascript"
           }

@@ -76,7 +76,7 @@ jobs:
 
       - name: Run Brands API Tests
         run: newman run tests/BrandsAPITests.json \
-              --iteration-data dataBrands.csv \
+              --iteration-data tests/dataBrands.csv -r cli
               -r htmlextra --reporter-htmlextra-export reports/brands-report.html
 
       - name: Run Products API Tests
