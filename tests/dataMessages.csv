@@ -9,3 +9,7 @@ hoa.trinh@example.com,Hoa Trinh,Partnership proposal,I am interested in collabor
 an.nguyen@example.com,An Nguyen,Request for bulk order discount,We plan to order 100 units of your product. Can you provide a bulk discount?
 thanh.pham@example.com,Thanh Pham,Feedback on customer service,I am very satisfied with how your support team handled my issue.
 khanh.le@example.com,Khanh Le,Question about payment methods,Do you accept PayPal for online purchases?
+invalid-email,Invalid User,Invalid email test,This should fail because the email is not valid.
+test@example.com,,Missing name test,Name field is empty so should fail validation.
+nam.vo@example.com,Nam Vo,,Subject is missing.
+phuong.nguyen@example.com,Phuong Nguyen,Empty message,
