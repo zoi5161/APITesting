@@ -94,7 +94,8 @@ jobs:
 
 
       - name: Run Products API Tests
-        run: newman run tests/ProductsAPITests.json \
+        run: |
+              newman run tests/ProductsAPITests.json \
               --iteration-data tests/dataProducts.csv \
               -r cli \
               -r htmlextra --reporter-htmlextra-export reports/products-report.html
