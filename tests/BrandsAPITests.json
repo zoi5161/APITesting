@@ -15,9 +15,9 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8091/brands/1",
+					"raw": "http://localhost:8091/api/brands/1",
 					"host": ["http://localhost:8091"],
-					"path": ["brands", "1"]
+					"path": ["api", "brands", "1"]
 				}
 			},
 			"response": []
