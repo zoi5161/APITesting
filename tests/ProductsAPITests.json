@@ -12,10 +12,10 @@
         "method": "GET",
         "header": [],
         "url": {
-			"raw": "http://localhost:8091/api/products/{{id}}",
-			"host": ["http://localhost:8091"],
-			"path": ["api", "products", "{{id}}"]
-		}
+          "raw": "http://localhost:8091/products/{{id}}",
+          "host": ["http://localhost:8091"],
+          "path": ["products", "{{id}}"]
+        }
       },
       "response": []
     }
