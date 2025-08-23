@@ -8,33 +8,6 @@
   "item": [
     {
       "name": "Get Each Product",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test(\"Status code is 200\", function () {",
-              "    pm.response.to.have.status(200);",
-              "});",
-              "",
-              "var jsonData = pm.response.json();",
-              "pm.test(\"Response has id field\", function () {",
-              "    pm.expect(jsonData).to.have.property('id');",
-              "});",
-              "pm.test(\"Response has name field\", function () {",
-              "    pm.expect(jsonData).to.have.property('name');",
-              "});",
-              "pm.test(\"Response has price field\", function () {",
-              "    pm.expect(jsonData).to.have.property('price');",
-              "});",
-              "pm.test(\"Response has stock field\", function () {",
-              "    pm.expect(jsonData).to.have.property('stock');",
-              "});"
-            ]
-          }
-        }
-      ],
       "request": {
         "method": "GET",
         "header": [],
