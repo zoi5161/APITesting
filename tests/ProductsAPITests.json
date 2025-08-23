@@ -24,9 +24,9 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8091/api/products/{{id}}",
+					"raw": "http://localhost:8091/products/{{id}}",
 					"host": ["http://localhost:8091"],
-					"path": ["api", "products", "{{id}}"]
+					"path": ["products", "{{id}}"]
 				}
 			},
 			"response": []

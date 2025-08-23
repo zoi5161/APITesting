@@ -34,9 +34,9 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8091/api/messages",
+					"raw": "http://localhost:8091/messages",
 					"host": ["http://localhost:8091"],
-					"path": ["api", "messages"]
+					"path": ["messages"]
 				}
 			},
 			"response": []

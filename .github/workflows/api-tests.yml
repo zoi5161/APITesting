@@ -19,7 +19,7 @@ jobs:
 
       - name: Kiểm tra nội dung file dataBrands.csv
         run: |
-          ls -la tests/
+          ls -la tests/ || echo "Thư mục tests/ không tồn tại"
           cat tests/dataBrands.csv || echo "File dataBrands.csv không tồn tại hoặc rỗng"
           echo "Header của file:"
           head -n 1 tests/dataBrands.csv
@@ -96,11 +96,14 @@ jobs:
         run: mkdir -p reports
 
       - name: Run Brands API Tests
-        run: newman run tests/BrandsAPITests.json \
-              --env-var baseUrl="http://localhost:8091" \
-              --iteration-data tests/dataBrands.csv \
-              -r htmlextra --reporter-htmlextra-export reports/brands-report.html \
-              --verbose
+        run: |
+          newman run tests/BrandsAPITests.json \
+            --env-var baseUrl="http://localhost:8091" \
+            --iteration-data tests/dataBrands.csv \
+            -r htmlextra --reporter-htmlextra-export reports/brands-report.html \
+            --verbose > newman-brands.log 2>&1
+      - name: In log Newman
+        run: cat newman-brands.log
 
       - name: Run Products API Tests
         run: newman run tests/ProductsAPITests.json \
