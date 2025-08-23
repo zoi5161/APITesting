@@ -76,7 +76,8 @@ jobs:
 
       - name: Run Brands API Tests
         run: newman run tests/BrandsAPITests.json \
-              --iteration-data tests/dataBrands.csv -r cli
+              --env-var baseUrl="http://localhost:8091" \
+              --iteration-data tests/dataBrands.csv \
               -r htmlextra --reporter-htmlextra-export reports/brands-report.html
 
       - name: Run Products API Tests

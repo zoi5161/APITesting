@@ -1,27 +1,19 @@
 {
   "info": {
+    "_postman_id": "8ef83890-ec96-414b-a7ea-a40cb1d8cf9f",
     "name": "Brands API Tests",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "39230841"
   },
   "item": [
     {
       "name": "Get Each Brands",
       "request": {
         "method": "GET",
-        "url": "http://localhost:8091/brands/0"
+        "header": [],
+        "url": "http://localhost:8091/brands/{{id}}"
       },
-      "event": [
-        {
-          "listen": "prerequest",
-          "script": {
-            "exec": [
-              "let id = pm.iterationData.get('id');",
-              "pm.request.url = 'http://localhost:8091/brands/' + id;"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ]
+      "response": []
     }
   ]
 }
