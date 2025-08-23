@@ -2,9 +2,9 @@ name: API Tests with Newman
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   newman-tests:
@@ -13,6 +13,24 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Kiểm tra cấu trúc thư mục
+        run: find . -type f
+
+      - name: Kiểm tra nội dung file dataBrands.csv
+        run: |
+          ls -la tests/
+          cat tests/dataBrands.csv || echo "File dataBrands.csv không tồn tại hoặc rỗng"
+          echo "Header của file:"
+          head -n 1 tests/dataBrands.csv
+
+      - name: Sửa định dạng line endings
+        run: |
+          sudo apt-get install -y dos2unix
+          dos2unix tests/dataBrands.csv
+
+      - name: Cấp quyền cho file CSV
+        run: chmod +r tests/dataBrands.csv
 
       - name: Set up Docker
         uses: docker/setup-buildx-action@v2
@@ -66,6 +84,9 @@ jobs:
       - name: Seed database
         run: docker compose exec -T laravel-api php artisan db:seed --force
 
+      - name: Kiểm tra dữ liệu trong bảng brands
+        run: docker compose exec -T laravel-api php artisan tinker --execute="DB::table('brands')->get()"
+
       - name: Install Newman + Reporter
         run: |
           npm install -g newman
@@ -76,9 +97,10 @@ jobs:
 
       - name: Run Brands API Tests
         run: newman run tests/BrandsAPITests.json \
-              --env-var baseurl="http://localhost:8091" \
+              --env-var baseUrl="http://localhost:8091" \
               --iteration-data tests/dataBrands.csv \
-              -r htmlextra --reporter-htmlextra-export reports/brands-report.html
+              -r htmlextra --reporter-htmlextra-export reports/brands-report.html \
+              --verbose
 
       - name: Run Products API Tests
         run: newman run tests/ProductsAPITests.json \
