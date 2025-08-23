@@ -74,6 +74,15 @@ jobs:
       - name: Prepare reports folder
         run: mkdir -p reports
 
+      - name: Debug CSV
+        run: |
+          echo "PWD: $(pwd)"
+          echo "List tests folder:"
+          ls -l tests
+          echo "Content of dataBrands.csv:"
+          cat tests/dataBrands.csv || echo "❌ File not found"
+
+
       - name: Run Brands API Tests
         run: newman run tests/BrandsAPITests.json \
               --env-var baseUrl="http://localhost:8091" \
